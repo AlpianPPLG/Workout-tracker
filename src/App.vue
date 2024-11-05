@@ -242,10 +242,11 @@ export default {
         reminder: ''
       }
       this.updateChart()
-
       // Notifikasi berhasil menambah data
       Swal.fire('Added!', 'Your workout has been added successfully.', 'success')
     },
+
+    // Hapus
     removeWorkout(index) {
       Swal.fire({
         title: 'Are you sure?',
@@ -263,10 +264,14 @@ export default {
         }
       })
     },
+
+    // Edit
     editWorkoutDetails(index) {
       this.editIndex = index
       this.editWorkout = { ...this.workouts[index] }
     },
+
+    // Simpan
     saveEdit(index) {
       if (!this.editWorkout.name || !this.editWorkout.date || this.editWorkout.duration <= 0) {
         Swal.fire({
@@ -286,10 +291,11 @@ export default {
         reminder: ''
       }
       this.updateChart()
-
       // Notifikasi berhasil mengedit data
       Swal.fire('Updated!', 'Your workout has been updated successfully.', 'success')
     },
+
+    // Edit
     cancelEdit() {
       this.editIndex = -1
       this.editWorkout = {
@@ -300,16 +306,16 @@ export default {
         reminder: ''
       }
     },
+
+    // Chart
     updateChart() {
       const ctx = document.getElementById('workoutChart').getContext('2d')
       const labels = this.workouts.map((workout) => new Date(workout.date).toLocaleDateString())
       const data = this.workouts.map((workout) => workout.duration)
-
       // Clear previous chart
       if (this.chartInstance) {
         this.chartInstance.destroy()
       }
-
       // Create new chart
       this.chartInstance = new Chart(ctx, {
         type: 'line',
@@ -344,11 +350,21 @@ export default {
     }
   },
   watch: {
-    workouts() {
-      this.updateChart()
+    workouts: {
+      handler(newWorkouts) {
+        localStorage.setItem('workouts', JSON.stringify(newWorkouts))
+        this.updateChart()
+      },
+      deep: true
     }
   },
+
+  // Lifecycle hooks
   mounted() {
+    const storedWorkouts = localStorage.getItem('workouts')
+    if (storedWorkouts) {
+      this.workouts = JSON.parse(storedWorkouts)
+    }
     this.updateChart()
   }
 }
