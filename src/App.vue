@@ -166,6 +166,10 @@
         </div>
       </section>
     </main>
+    <!-- Footer Copyright -->
+    <footer class="text-center py-4">
+      <p class="text-gray-600">&copy; 2024 Workout Tracker. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
@@ -238,10 +242,26 @@ export default {
         reminder: ''
       }
       this.updateChart()
+
+      // Notifikasi berhasil menambah data
+      Swal.fire('Added!', 'Your workout has been added successfully.', 'success')
     },
     removeWorkout(index) {
-      this.workouts.splice(index, 1)
-      this.updateChart()
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.workouts.splice(index, 1)
+          this.updateChart()
+          Swal.fire('Deleted!', 'Your workout has been deleted.', 'success')
+        }
+      })
     },
     editWorkoutDetails(index) {
       this.editIndex = index
@@ -266,6 +286,9 @@ export default {
         reminder: ''
       }
       this.updateChart()
+
+      // Notifikasi berhasil mengedit data
+      Swal.fire('Updated!', 'Your workout has been updated successfully.', 'success')
     },
     cancelEdit() {
       this.editIndex = -1
